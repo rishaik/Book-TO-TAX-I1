@@ -6,6 +6,6 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',      // allow external access
     port: 5173,           // or any custom port
-    allowedHosts: ['book-to-tax.onrender.com'] 
+    allowedHosts: ['https://book-to-tax-i1.onrender.com/'] 
   }
 });
