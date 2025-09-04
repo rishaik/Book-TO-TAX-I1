@@ -1,22 +1,27 @@
 import React, { useEffect } from 'react';
-import introJs from 'intro.js';
 import 'intro.js/introjs.css';
+import { WalkthroughAnalytics } from '../utils/walkthroughAnalytics';
 import '../styles/walkthrough.css';
 
-const ProductWalkthrough = ({ isActive, onClose }) => {
+const ProductWalkthrough = ({ isActive, onClose, onComplete }) => {
   useEffect(() => {
     if (isActive) {
-      // Configure Intro.js
-      const intro = introJs();
+      let introInstance;
+      const analytics = new WalkthroughAnalytics({ walkthroughName: 'book_tax_walkthrough', totalSteps: 6 });
+
+      // Dynamic import for lazy loading and faster initial load
+      import('intro.js').then(({ default: introJs }) => {
+        const intro = introJs();
+        introInstance = intro;
       
       intro.setOptions({
-        nextLabel: 'Next →',
-        prevLabel: '← Back',
-        skipLabel: 'Skip Tour',
-        doneLabel: 'Finish',
-        showProgress: true,
-        showBullets: false,
-        exitOnOverlayClick: false,
+        nextLabel: 'Next',
+        prevLabel: 'Back',
+        skipLabel: '×',
+        doneLabel: 'Get Started!',
+        showProgress: false,
+        showBullets: true,
+        exitOnOverlayClick: true,
         exitOnEsc: true,
         scrollToElement: true,
         scrollPadding: 30,
@@ -25,117 +30,146 @@ const ProductWalkthrough = ({ isActive, onClose }) => {
         highlightClass: 'custom-highlight',
         steps: [
           {
-            element: '[data-intro="header-title"]',
-            intro: '<h4>Welcome to Book-Tax Dashboard</h4><p>This is your comprehensive book-to-tax reconciliation platform. Let\'s explore all the features together!</p>',
-            position: 'bottom'
-          },
-          {
-            element: '[data-intro="year-select"]',
-            intro: '<h4>Year Selection</h4><p>Select the tax year you want to work with. Available years range from 2021 to 2025.</p>',
-            position: 'bottom'
-          },
-          {
-            element: '[data-intro="scenario-select"]',
-            intro: '<h4>Scenario Selection</h4><p>Choose between Actual, Forecast, or Budget scenarios to analyze different financial projections.</p>',
-            position: 'bottom'
-          },
-          {
-            element: '[data-intro="main-tabs"]',
-            intro: '<h4>Main Navigation</h4><p>These are the main sections of the application. Each tab provides different views and functionalities.</p>',
-            position: 'bottom'
+            intro: '<h4>Hello World! 👋</h4><p>Welcome to your guided tour.</p>',
+            position: 'auto'
           },
           {
             element: '[data-intro="book-data-tab"]',
-            intro: '<h4>Book Data</h4><p>View and manage your book data including General Ledger and Trial Balance information.</p>',
-            position: 'bottom'
-          },
-          {
-            element: '[data-intro="sub-tabs"]',
-            intro: '<h4>Sub Navigation</h4><p>Switch between General Ledger and Trial Balance views to see different data perspectives.</p>',
-            position: 'bottom'
+            intro: '<h4>Core Feature #1</h4><p>Book Data shows your core financials for reconciliation.</p>',
+            position: 'bottom',
+            blurBackground: true
           },
           {
             element: '[data-intro="search-bar"]',
-            intro: '<h4>Search Functionality</h4><p>Use this search bar to quickly find specific records in your data tables.</p>',
-            position: 'bottom'
+            intro: '<h4>Core Feature #2</h4><p>Use search to quickly find records and speed decisions.</p>',
+            position: 'bottom',
+            blurBackground: true
           },
           {
-            element: '[data-intro="import-button"]',
-            intro: '<h4>Import Data</h4><p>Import new data files to update your book records and trial balance information.</p>',
-            position: 'left'
+            element: '[data-intro="sub-tabs"]',
+            intro: '<h4>Navigation</h4><p>Switch views here: General Ledger or Trial Balance.</p>',
+            position: 'bottom'
           },
           {
             element: '[data-intro="add-button"]',
-            intro: '<h4>Add New Records</h4><p>Manually add new entries to your book data when needed.</p>',
-            position: 'left'
-          },
-          {
-            element: '[data-intro="data-table"]',
-            intro: '<h4>Data Table</h4><p>This interactive table displays your financial data. You can select rows, sort columns, and group data.</p>',
-            position: 'top'
-          },
-          {
-            element: '[data-intro="row-selection"]',
-            intro: '<h4>Row Selection</h4><p>Use checkboxes to select specific rows for bulk operations or detailed analysis.</p>',
-            position: 'right'
-          },
-          {
-            element: '[data-intro="book-adjustments-tab"]',
-            intro: '<h4>Book Adjustments</h4><p>Make automated or manual adjustments to your book entries.</p>',
-            position: 'bottom'
-          },
-          {
-            element: '[data-intro="tax-adjustments-tab"]',
-            intro: '<h4>Tax Adjustments</h4><p>Handle tax-specific adjustments with automated and manual options.</p>',
-            position: 'bottom'
-          },
-          {
-            element: '[data-intro="diagnostics-tab"]',
-            intro: '<h4>Diagnostics</h4><p>View comprehensive analytics and status reports for your tax processes.</p>',
-            position: 'bottom'
-          },
-          {
-            element: '[data-intro="detailed-view-tab"]',
-            intro: '<h4>Detailed View</h4><p>Access advanced data tables with enhanced filtering and analysis capabilities.</p>',
-            position: 'bottom'
-          },
-          {
-            element: '[data-intro="summary-view-tab"]',
-            intro: '<h4>Summary View</h4><p>Get high-level insights with summary charts and aggregated data tables.</p>',
-            position: 'bottom'
-          },
-          {
-            element: '[data-intro="pdf-form-view-tab"]',
-            intro: '<h4>PDF/Form View</h4><p>View and manage PDF documents and forms related to your tax filings.</p>',
-            position: 'bottom'
+            intro: '<h4>Key Action</h4><p>Add manual adjustments in this panel. We\'ll open it for you.</p>',
+            position: 'left',
+            blurBackground: true,
+            prepare: 'openManualPanel'
           },
           {
             element: '[data-intro="footer-info"]',
-            intro: '<h4>Data Information</h4><p>The footer shows important information like total number of rows in your current view.</p>',
+            intro: '<h4>Resources & Next Steps</h4><p>Need help later? Use the help button to replay.</p>',
             position: 'top'
-          },
-          {
-            intro: '<h4>🎉 Tour Complete!</h4><p>You\'ve successfully completed the Book-Tax dashboard tour. You can restart this tour anytime by clicking the help button.</p>'
           }
         ]
       });
 
-      // Start the tour
-      intro.start();
+        // Start the tour and add passive hints
+        analytics.start();
+        intro.start();
+        (async () => {
+          try {
+            const { default: introJs2 } = await import('intro.js');
+            introJs2().hint().addHints();
+          } catch (_) {}
+        })();
 
-      // Handle tour completion
-      intro.oncomplete(() => {
-        onClose();
-      });
+        // Step change tracking and dynamic overlay blur
+        const applyOverlayBlurForStep = (stepIndex) => {
+          const overlay = document.querySelector('.introjs-overlay');
+          if (!overlay) return;
+          try {
+            const step = (intro._options && intro._options.steps && intro._options.steps[stepIndex]) || {};
+            if (step.blurBackground) {
+              overlay.classList.add('overlay-strong-blur');
+            } else {
+              overlay.classList.remove('overlay-strong-blur');
+            }
+          } catch (_) {}
+        };
 
-      // Handle tour exit
-      intro.onexit(() => {
-        onClose();
+        const waitFor = (selector, timeoutMs = 3000) => new Promise((resolve, reject) => {
+          const start = performance.now();
+          const tick = () => {
+            const el = document.querySelector(selector);
+            if (el) return resolve(el);
+            if (performance.now() - start > timeoutMs) return reject(new Error('Timeout waiting for ' + selector));
+            requestAnimationFrame(tick);
+          };
+          tick();
+        });
+
+        const clickIfExists = (selector) => {
+          const el = document.querySelector(selector);
+          if (el) {
+            try { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (_) {}
+            el.click();
+          }
+        };
+
+        const openManualPanelFlow = async () => {
+          // 1) Go to Book Adjustments tab
+          clickIfExists('[data-intro="book-adjustments-tab"]');
+          // 2) Wait for sub-tabs and click Manual
+          await waitFor('.sub-nav-tabs');
+          const manualBtn = Array.from(document.querySelectorAll('.sub-nav-tabs button')).find(b => (b.textContent || '').trim() === 'Manual');
+          if (manualBtn) manualBtn.click();
+          // 3) Wait for + button and click to open sidepanel
+          await waitFor('[data-intro="add-button"]');
+          clickIfExists('[data-intro="add-button"]');
+          // 4) Wait for sidepanel to appear and refresh positioning
+          await waitFor('.sidepanel');
+          try {
+            const current = intro._currentStep || 0;
+            const panel = document.querySelector('.sidepanel');
+            if (panel && intro._introItems && intro._introItems[current]) {
+              intro._introItems[current].element = panel;
+            }
+            intro.refresh();
+          } catch (_) {}
+        };
+
+        intro.onchange(async () => {
+          const current = intro._currentStep || 0;
+          analytics.changeStep(current);
+          try {
+            const step = (intro._options && intro._options.steps && intro._options.steps[current]) || {};
+            if (step.prepare === 'openManualPanel') {
+              await openManualPanelFlow();
+            }
+          } catch (_) {}
+          applyOverlayBlurForStep(current);
+        });
+
+        intro.onafterchange(() => {
+          const current = intro._currentStep || 0;
+          applyOverlayBlurForStep(current);
+        });
+
+        // Handle tour completion
+        intro.oncomplete(() => {
+          try { document.querySelector('.introjs-overlay')?.classList.remove('overlay-strong-blur'); } catch (_) {}
+          analytics.complete();
+          onClose && onClose();
+          onComplete && onComplete();
+        });
+
+        // Handle tour exit
+        intro.onexit(() => {
+          try { document.querySelector('.introjs-overlay')?.classList.remove('overlay-strong-blur'); } catch (_) {}
+          analytics.exit('exit');
+          onClose && onClose();
+          onComplete && onComplete();
+        });
       });
 
       // Cleanup function
       return () => {
-        intro.exit();
+        try {
+          introInstance && introInstance.exit();
+        } catch (_) {}
+        try { document.querySelector('.introjs-overlay')?.classList.remove('overlay-strong-blur'); } catch (_) {}
       };
     }
   }, [isActive, onClose]);
